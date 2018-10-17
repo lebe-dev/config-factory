@@ -1,0 +1,33 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.2.71'
+}
+
+group 'ru.chikchik.tools.cf'
+version '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Config Factory',
+                   'Implementation-Version': version,
+                   'Main-Class': 'ru.chikchik.tools.cf.App'
+    }
+    
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
