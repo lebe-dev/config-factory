@@ -6,7 +6,7 @@ data class AppConfig(
      */
     val variableNames: List<String> = listOf(),
 
-        /**
+    /**
      * Переменные и значения
      */
     val variables: Map<String, String>,

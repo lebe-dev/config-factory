@@ -16,7 +16,7 @@ class ConfigManager {
     fun load(file: File): Optional<AppConfig> =
         if (file.exists()) {
             try {
-                log.info("~ loading config from file '${file.name}'..")
+                log.info("[~] loading config from file '${file.name}'..")
                 log.info("  - path: '${file.absolutePath}'")
 
                 val config = ConfigFactory.parseFile(file).getConfig("config")
@@ -24,10 +24,10 @@ class ConfigManager {
                 val globalVariableNames = getStringList(config, "variableNames")
 
                 val result = AppConfig(
-                        variableNames = globalVariableNames.distinct(),
-                        variables = getVariableMap(globalVariableNames, config),
-                        profiles = getProfileList(globalVariableNames),
-                        outputFileFormat = config.getString("outputFileFormat")
+                    variableNames = globalVariableNames.distinct(),
+                    variables = getVariableMap(globalVariableNames, config),
+                    profiles = getProfileList(globalVariableNames),
+                    outputFileFormat = config.getString("outputFileFormat")
                 )
 
                 log.info("+ config successfully loaded")
@@ -52,7 +52,7 @@ class ConfigManager {
     private fun loadProfileFromFile(globalVariableNames: List<String>, file: File): Optional<Profile> =
         if (file.exists()) {
             try {
-                log.info("~ loading profile from file '${file.name}'..")
+                log.info("~ loading profile from '${file.name}'..")
 
                 val results = HashMap<String, String>()
                 val config = ConfigFactory.parseFile(file).getConfig("profile")
