@@ -6,5 +6,5 @@
 # Как использовать
 
 ```
-java -jar config-factory.jar
+java -jar config-factory.jar -t <файл шаблона>
 ```
