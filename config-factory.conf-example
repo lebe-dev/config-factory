@@ -1,0 +1,9 @@
+config {
+  variableNames = ["name", "tenantId", "domain"]
+
+  domain = "demosite.com"
+
+  appPort = 8080
+
+  outputFileFormat = "${name}.${domain}.conf"
+}
