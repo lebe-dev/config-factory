@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import java.io.File
 
+@DisplayName("Configuration Manager")
 internal class ConfigManagerTest {
     lateinit var configManager: ConfigManager
 
@@ -37,7 +38,7 @@ internal class ConfigManagerTest {
         assertEquals("KRAKOW-ID", krakowProfile.variables["tenantId"])
 
         assertEquals("demosite.com", config.variables["domain"])
-        assertEquals("\${identity}.\${domain}.conf", config.outputFileFormat)
+        assertEquals("\${name}.\${domain}.conf", config.outputFileFormat)
     }
 
     @Test

@@ -1,0 +1,13 @@
+server {
+    listen       80;
+    server_name  ${name}.${domain};
+
+    charset utf8;
+
+    location / {
+        proxy_pass http://localhost:35200;
+        proxy_set_header Host            host;
+        proxy_set_header X-Forwarded-For remote_addr;
+        proxy_set_header X-TenantID ABC;
+    }
+}

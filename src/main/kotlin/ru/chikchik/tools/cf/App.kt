@@ -15,10 +15,11 @@ class App {
     companion object {
         private val log = LoggerFactory.getLogger(App::class.java)
 
+        const val OUTPUT_DIRECTORY = "output"
+
         private const val CONFIG_FILE = "config-factory.conf"
         private const val TEMPLATE_FILE_OPTION = "t"
         private const val OUTPUT_PATH_OPTION = "o"
-        private const val OUTPUT_DIRECTORY = "output"
 
         private fun getCommandLineOptions(): Options =
             Options().apply {
