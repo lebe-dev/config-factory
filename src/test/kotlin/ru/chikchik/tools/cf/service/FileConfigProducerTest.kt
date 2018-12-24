@@ -9,16 +9,18 @@ import ru.chikchik.tools.cf.domain.Profile
 import java.io.File
 
 @DisplayName("Config Producer Test")
-internal class ConfigProducerTest {
+internal class FileConfigProducerTest {
 
     @Test
     @DisplayName("Produce config files")
     fun produce() {
-        val templateResource = File(javaClass.getResource("/test.template").toURI())
+        val fileName = "test.template"
 
-        val templateFile = templateResource.copyTo(File("test.template"), true)
+        val templateResource = File(javaClass.getResource("/$fileName").toURI())
 
-        val producer = ConfigProducer(templateFile.name)
+        val templateFile = templateResource.copyTo(File(fileName), true)
+
+        val producer = FileConfigProducer(templateFile.name)
         val results = producer.produce(
             profiles = listOf(
                 Profile(
