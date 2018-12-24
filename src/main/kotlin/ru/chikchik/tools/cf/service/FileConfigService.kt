@@ -10,10 +10,10 @@ import java.io.File
 import java.nio.file.Paths
 import java.util.*
 
-class ConfigManager {
+class FileConfigService: ConfigService {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    fun load(file: File): Optional<AppConfig> =
+    override fun load(file: File): Optional<AppConfig> =
         if (file.exists()) {
             try {
                 log.info("[~] loading config from file '${file.name}'..")
@@ -113,17 +113,10 @@ class ConfigManager {
         return results
     }
 
-    private fun getVariableMap(variableNames: List<String>, config: Config): Map<String, String> {
-        val results = HashMap<String, String>()
-
-        variableNames.forEach { varEntity ->
-            if (config.hasPath(varEntity)) {
-                results += varEntity to config.getString(varEntity)
-            }
-        }
-
-        return results
-    }
+    private fun getVariableMap(variableNames: List<String>, config: Config): Map<String, String> =
+            variableNames.asSequence()
+                         .filter { config.hasPath(it) }
+                         .map { it to config.getString(it) }.toMap()
 
     private fun getStringList(config: Config, propertyName: String): List<String> =
             if (config.hasPath(propertyName)) config.getStringList(propertyName) else listOf()

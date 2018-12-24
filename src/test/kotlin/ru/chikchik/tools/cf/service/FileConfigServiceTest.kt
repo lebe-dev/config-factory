@@ -5,23 +5,24 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import ru.chikchik.tools.cf.App
 import java.io.File
 
 @DisplayName("Configuration Manager")
-internal class ConfigManagerTest {
-    lateinit var configManager: ConfigManager
+internal class FileConfigServiceTest {
+    private lateinit var configService: FileConfigService
 
     @BeforeEach
     fun setUp() {
-        configManager = ConfigManager()
+        configService = FileConfigService()
     }
 
     @Test
     @DisplayName("Load config from file")
     fun load() {
-        val configFile = File(javaClass.getResource("/config-factory.conf").toURI())
+        val configFile = File(javaClass.getResource("/${App.CONFIG_FILE}").toURI())
 
-        val config = configManager.load(configFile).get()
+        val config = configService.load(configFile).get()
 
         assertEquals(2, config.profiles.size)
 
@@ -44,7 +45,7 @@ internal class ConfigManagerTest {
     @Test
     @DisplayName("Load config from nonexistence file")
     fun loadFromUnknownFile() {
-        assertFalse(configManager.load(File("gq3948ghq9gihdfg")).isPresent)
+        assertFalse(configService.load(File("gq3948ghq9gihdfg")).isPresent)
     }
 
     @Test
@@ -53,7 +54,7 @@ internal class ConfigManagerTest {
         val configFile = File("invalid-config")
         configFile.writeText("owrijg0q394jg834jg")
 
-        assertFalse(configManager.load(configFile).isPresent)
+        assertFalse(configService.load(configFile).isPresent)
 
         if (configFile.exists()) { configFile.delete() }
     }
@@ -68,7 +69,7 @@ internal class ConfigManagerTest {
                 "  tenantId = \"BRISTOL07\"\n" +
                 "}")
 
-        assertFalse(configManager.load(configFile).isPresent)
+        assertFalse(configService.load(configFile).isPresent)
 
         if (configFile.exists()) { configFile.delete() }
     }
@@ -81,7 +82,7 @@ internal class ConfigManagerTest {
                 "  tenantId = \"BRISTOL07\"\n" +
                 "}")
 
-        assertFalse(configManager.load(configFile).isPresent)
+        assertFalse(configService.load(configFile).isPresent)
 
         if (configFile.exists()) { configFile.delete() }
     }
