@@ -2,41 +2,38 @@
 
 Pretty simple config files generator based on templates and profiles.
 
-## How to use
+## Getting started
 
-For example - we have task to generate 17 virtual host configurations for nginx. 
+Example task: generate 17 virtual host configurations for nginx. 
 Each configuration will proxy some java application for specified subdomain.
 
-Nginx config example:
+### 1. Create application config
 
 ```
-server {
-    listen       80;
-    server_name  some-app.somedomain.com;
+cp config-factory.conf-example config-factory.conf
+```
 
-    charset utf8;
+### 2. Define variable names
 
-    location / {
-        proxy_pass http://localhost:12345;
-        proxy_set_header Host            $host;
-        proxy_set_header X-Forwarded-For $remote_addr;
-    }
+config-factory.conf:
+
+```
+config {
+  # Global variable names
+  variableNames = ["name", "appId"]
+
+  outputFileFormat = "${name}.somedomain.com.conf"
 }
 ```
 
-We need two variables for our template:
+### 3. Create template file
 
-- subdomain name
-- application port
-
-### 1. Create template file
-
-Let's create nginx template file `nginx.template`:
+Create `nginx.template` file:
 
 ```
 server {
     listen       80;
-    server_name  ${subDomainName}.somedomain.com;
+    server_name  ${name}.somedomain.com;
 
     charset utf8;
 
@@ -48,45 +45,34 @@ server {
 }
 ```
 
-### 2. Define variable names
+We need two variables for our template:
 
-Define variable names in `config-factory.conf` file.
+- subdomain name
+- application port
 
-Example config:
+### 4. Create profiles:
 
-```
-   config {
-     variableNames = ["subDomainName", "appPort"]
-   
-     outputFileFormat = "${name}.${domain}.conf"
-   }
-```
+Inside profiles directory create `.conf` files:
 
-### 3. Create profiles
-
-Profiles contain variables which will be substituted in template.
-
-Let's create few profiles for our example with nginx:
+For example - demo-app profile: `profiles/demo-app.conf`:
 
 ```
- profile {
-   subDomainName = "demo-app"
-   appPort = 8312
- }
+profile {
+  name = "demo-app"
+  appPort = 4182
+}
 ```
 
+Example suzuki profile: `profiles/suzuki.conf`:
+
 ```
- profile {
-   subDomainName = "tutorial"
-   appPort = 3928
- }
+profile {
+  name = "suzuki"
+  appPort = 7958
+}
 ```
 
-...
-
-All profile should be placed inside `profiles` directory. One profile per file.
-
-### 4. Run
+### 5. Run
 
 Run tool:
 
@@ -104,7 +90,7 @@ And check `output` directory. The first file `demo-app.conf` will contain:
      charset utf8;
  
      location / {
-         proxy_pass http://localhost:8312;
+         proxy_pass http://localhost:4182;
          proxy_set_header Host            $host;
          proxy_set_header X-Forwarded-For $remote_addr;
      }
@@ -176,7 +162,7 @@ You can specify output file names format with `outputFileFormat` property. It su
 
 Check `profiles` directory and `nginx.template-example` file.
 
-## How to build project
+## How to build a project
 
 How to build project from sources
 
