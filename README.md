@@ -1,11 +1,11 @@
 # Config Factory
 
-Config files generator based on template and profiles.
+Pretty simple config files generator based on templates and profiles.
 
 ## How to use
 
 For example - we have task to generate 17 virtual host configurations for nginx. 
-Each configuration will proxy some java application on subdomain.
+Each configuration will proxy some java application for specified subdomain.
 
 Nginx config example:
 
@@ -29,14 +29,14 @@ We need two variables for our template:
 - subdomain name
 - application port
 
-###1. Create template file
+### 1. Create template file
 
 Let's create nginx template file `nginx.template`:
 
 ```
 server {
     listen       80;
-    server_name  ${name}.somedomain.com;
+    server_name  ${subDomainName}.somedomain.com;
 
     charset utf8;
 
@@ -48,38 +48,39 @@ server {
 }
 ```
 
-### 2. Create profiles
+### 2. Define variable names in configuration file
 
-Profiles contain variables which will be substituted in template.
+Write variable names inside `config-factory.conf` file.
 
 Example:
 
 ```
-profile {
-  somevar1 = "somevalue"
-  somevar2 = 10000
-}
+   variableNames = ["subDomainName", "appPort"]
 ```
+
+### 2. Create profiles
+
+Profiles contain variables which will be substituted in template.
 
 Let's create few profiles for our example with nginx:
 
 ```
  profile {
-   name = "demo-app"
+   subDomainName = "demo-app"
    appPort = 8312
  }
 ```
 
 ```
  profile {
-   name = "tutorial"
+   subDomainName = "tutorial"
    appPort = 3928
  }
 ```
 
 ...
 
-All profile should be stored inside `profiles` directory. One profile per file.
+All profile should be placed inside `profiles` directory. One profile per file.
 
 ### 3. Run
 
@@ -128,6 +129,14 @@ Insert variables with following syntax:
 ```
 ${variableName}
 ```
+
+## Configuration
+
+Config factory looks for `config-factory.conf` file in work directory. Use sample file `config-factory.conf-example`.
+
+### Output files format
+
+You can specify output file names format with `outputFileFormat` property. It supports template variables too.
 
 ## Examples
 
