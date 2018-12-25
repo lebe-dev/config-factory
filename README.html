@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Getting started - Config Factory</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+</head>
+<body class="p-5">
+    <h1 id="configfactory">Config Factory</h1>
+
+    <p>Pretty simple config files generator based on templates and profiles.</p>
+
+    <h2 id="gettingstarted">Getting started</h2>
+
+    <p>Example task: generate 17 virtual host configurations for nginx.
+        Each configuration will proxy some java application for specified subdomain.</p>
+
+    <h3 id="1createapplicationconfig">1. Create application config</h3>
+
+    <pre><code>cp config-factory.conf-example config-factory.conf
+    </code></pre>
+
+    <h3 id="2definevariablenames">2. Define variable names</h3>
+
+    <p>config-factory.conf:</p>
+
+    <pre><code>config {
+      # Global variable names
+      variableNames = ["name", "appId"]
+
+      outputFileFormat = "${name}.somedomain.com.conf"
+    }
+    </code></pre>
+
+    <h3 id="3createtemplatefile">3. Create template file</h3>
+
+    <p>Create <code>nginx.template</code> file:</p>
+
+    <pre><code>server {
+        listen       80;
+        server_name  ${name}.somedomain.com;
+
+        charset utf8;
+
+        location / {
+            proxy_pass http://localhost:${appPort};
+            proxy_set_header Host            $host;
+            proxy_set_header X-Forwarded-For $remote_addr;
+        }
+    }
+    </code></pre>
+
+    <p>We need two variables for our template:</p>
+
+    <ul>
+        <li>subdomain name</li>
+
+        <li>application port</li>
+    </ul>
+
+    <h3 id="4createprofiles">4. Create profiles:</h3>
+
+    <p>Inside profiles directory create <code>.conf</code> files:</p>
+
+    <p>For example - demo-app profile: <code>profiles/demo-app.conf</code>:</p>
+
+    <pre><code>profile {
+      name = "demo-app"
+      appPort = 4182
+    }
+    </code></pre>
+
+    <p>Example suzuki profile: <code>profiles/suzuki.conf</code>:</p>
+
+    <pre><code>profile {
+      name = "suzuki"
+      appPort = 7958
+    }
+    </code></pre>
+
+    <p>Create rest profiles in the same way.</p>
+
+    <h3 id="5run">5. Run</h3>
+
+    <p>Run tool:</p>
+
+    <pre><code>java -jar config-factory.jar -t nginx.template
+    </code></pre>
+
+    <p>And check results inside <code>output</code> directory. The first file <code>demo-app.conf</code> will contain:</p>
+
+    <pre><code> server {
+         listen       80;
+         server_name  demo-app.somedomain.com;
+
+         charset utf8;
+
+         location / {
+             proxy_pass http://localhost:4182;
+             proxy_set_header Host            $host;
+             proxy_set_header X-Forwarded-For $remote_addr;
+         }
+     }
+    </code></pre>
+
+    <h2 id="configuration">Configuration</h2>
+
+    <p>Config factory looks for <code>config-factory.conf</code> file in work directory. Use sample file <code>config-factory.conf-example</code>.</p>
+
+    <h3 id="variablenamesandscope">Variable names and scope</h3>
+
+    <p>Property <code>variableNames</code> contain global variable names. You can add additional variable names inside profiles.</p>
+
+    <p>Example:</p>
+
+    <p>File <code>config-factory.conf</code>:</p>
+
+    <pre><code>config {
+         # visible everywhere
+         variableNames = ["subDomainName", "appPort"]
+    }
+    </code></pre>
+
+    <p>File <code>someprofile.conf</code>:</p>
+
+    <pre><code>profile {
+         # visible only for current profile
+         variableNames = ["surname", "age"]
+    }
+    </code></pre>
+
+    <h3 id="outputfilesformat">Output files format</h3>
+
+    <p>You can specify output file names format with <code>outputFileFormat</code> property. It supports template variables too.</p>
+
+    <h2 id="howitworks">How it works</h2>
+
+    <ol>
+        <li>Reads main configuration and global variables from <code>config-factory.conf</code>, then read profiles from <code>profiles/*.conf</code>.</li>
+
+        <li>Override variables with same names.</li>
+
+        <li>In loop: get profile, override global variables </li>
+
+        <li>Substitutes variables inside template</li>
+
+        <li>Create output file with specified format</li>
+    </ol>
+
+    <h3 id="profiles">Profiles</h3>
+
+    <p>Profile - plain text file with variables. It should be placed inside <code>profiles/</code> directory with <code>*.conf</code> extension.</p>
+
+    <p>Example:</p>
+
+    <pre><code>profile {
+        "name" = "cookie",
+        "domain" = "",
+        "portNumber" = 12345,
+        "whatever" = "somevalue"
+    }
+    </code></pre>
+
+    <h3 id="templates">Templates</h3>
+
+    <p>Template - plain text file. Insert variables with following syntax:</p>
+
+    <pre><code>${variableName}
+    </code></pre>
+
+    <h2 id="howtobuildaproject">How to build a project</h2>
+
+    <p>How to build project from sources</p>
+
+    <p><strong>Linux\MacOS:</strong></p>
+
+    <pre><code>gradlew clean build
+    </code></pre>
+
+    <p><strong>Windows:</strong></p>
+
+    <pre><code>gradlew.bat clean build
+    </code></pre>
+</body>
+</html>
