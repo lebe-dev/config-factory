@@ -62,7 +62,7 @@ Example config:
    }
 ```
 
-### 2. Create profiles
+### 3. Create profiles
 
 Profiles contain variables which will be substituted in template.
 
@@ -86,7 +86,7 @@ Let's create few profiles for our example with nginx:
 
 All profile should be placed inside `profiles` directory. One profile per file.
 
-### 3. Run
+### 4. Run
 
 Run tool:
 
@@ -113,7 +113,7 @@ And check `output` directory. The first file `demo-app.conf` will contain:
 
 ## Profiles
 
-Profile - plain text file with defined variables. It should be placed inside `profiles/` directory with `*.conf` extension.
+Profile - plain text file with variables. It should be placed inside `profiles/` directory with `*.conf` extension.
 
 Example:
 
@@ -128,7 +128,7 @@ profile {
 
 ## Templates
 
-Insert variables with following syntax:
+Template - plain text file. Insert variables with following syntax:
 
 ```
 ${variableName}
@@ -137,6 +137,28 @@ ${variableName}
 ## Configuration
 
 Config factory looks for `config-factory.conf` file in work directory. Use sample file `config-factory.conf-example`.
+
+### Variable names and scope
+
+Property `variableNames` contain global variable names. You can add additional variable names inside profiles.
+
+Example:
+
+File `config-factory.conf`:
+```
+config {
+     # visible everywhere
+     variableNames = ["subDomainName", "appPort"]
+}
+```
+
+File `someprofile.conf`:
+```
+profile {
+     # visible only for current profile
+     variableNames = ["surname", "age"]
+}
+```
 
 ### Output files format
 
