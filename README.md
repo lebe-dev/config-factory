@@ -1,7 +1,6 @@
 # Config Factory
 
-Config files generator based on template.
-
+Config files generator based on template and profiles.
 
 ## How to use
 
@@ -25,10 +24,9 @@ server {
 }
 ```
 
-So we'll need two variables for our template:
+We need two variables for our template:
 
 - subdomain name
-
 - application port
 
 ###1. Create template file
@@ -50,9 +48,9 @@ server {
 }
 ```
 
-###2. Create profiles
+### 2. Create profiles
 
-Profiles contain variables which will be substituted in final templates.
+Profiles contain variables which will be substituted in template.
 
 Example:
 
@@ -83,15 +81,15 @@ Let's create few profiles for our example with nginx:
 
 All profile should be stored inside `profiles` directory. One profile per file.
 
-###3. Run tool
+### 3. Run
 
-Finally, just run `config-factory`: 
+Run tool:
 
 ```
 java -jar config-factory.jar -t nginx.template
 ```
 
-And check `output` directory. The first file `demo-app.conf` will be:
+And check `output` directory. The first file `demo-app.conf` will contain:
 
 ```
  server {
@@ -107,6 +105,33 @@ And check `output` directory. The first file `demo-app.conf` will be:
      }
  }
 ```
+
+## Profiles
+
+Profile - plain text file with defined variables. It should be placed inside `profiles/` directory with `*.conf` extension.
+
+Example:
+
+```
+profile {
+    "name" = "cookie",
+    "domain" = "",
+    "portNumber" = 12345,
+    "whatever" = "somevalue"
+}
+```
+
+## Templates
+
+Insert variables with following syntax:
+
+```
+${variableName}
+```
+
+## Examples
+
+Check `profiles` directory and `nginx.template-example` file.
 
 ## How to build project
 
