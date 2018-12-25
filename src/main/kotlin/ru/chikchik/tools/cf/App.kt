@@ -44,7 +44,7 @@ class App {
                 if (config.isPresent) {
                     log.debug("+ config has been found")
 
-                    val outputPath = cmd.getOptionValue(TEMPLATE_FILE_OPTION) ?: OUTPUT_DIRECTORY
+                    val outputPath = cmd.getOptionValue(OUTPUT_PATH_OPTION) ?: OUTPUT_DIRECTORY
 
                     val configProducer: ConfigProducer = FileConfigProducer(cmd.getOptionValue(TEMPLATE_FILE_OPTION))
 
