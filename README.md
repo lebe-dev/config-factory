@@ -48,14 +48,18 @@ server {
 }
 ```
 
-### 2. Define variable names in configuration file
+### 2. Define variable names
 
-Write variable names inside `config-factory.conf` file.
+Define variable names in `config-factory.conf` file.
 
-Example:
+Example config:
 
 ```
-   variableNames = ["subDomainName", "appPort"]
+   config {
+     variableNames = ["subDomainName", "appPort"]
+   
+     outputFileFormat = "${name}.${domain}.conf"
+   }
 ```
 
 ### 2. Create profiles
@@ -137,6 +141,13 @@ Config factory looks for `config-factory.conf` file in work directory. Use sampl
 ### Output files format
 
 You can specify output file names format with `outputFileFormat` property. It supports template variables too.
+
+## How it works
+
+1. Read main configuration and global variables from `config-factory.conf`, then read profiles from `profiles/*.conf`.
+2. Override variables with same names.
+3. Create template
+4. Write with 
 
 ## Examples
 
