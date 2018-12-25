@@ -56,7 +56,7 @@ internal class FileConfigServiceTest {
 
         assertFalse(configService.load(configFile).isPresent)
 
-        if (configFile.exists()) { configFile.delete() }
+        configFile.delete()
     }
 
     @Test
@@ -71,7 +71,7 @@ internal class FileConfigServiceTest {
 
         assertFalse(configService.load(configFile).isPresent)
 
-        if (configFile.exists()) { configFile.delete() }
+        configFile.delete()
     }
 
     @Test
@@ -84,6 +84,17 @@ internal class FileConfigServiceTest {
 
         assertFalse(configService.load(configFile).isPresent)
 
-        if (configFile.exists()) { configFile.delete() }
+        configFile.delete()
+    }
+
+    @Test
+    @DisplayName("Load profile from file with invalid syntax")
+    fun loadProfileWithInvalidSyntax() {
+        val profileFile = File("blank-config")
+        profileFile.writeText("invalid-profile-syntax")
+
+        assertFalse(configService.loadProfileFromFile(listOf(), profileFile).isPresent)
+
+        profileFile.delete()
     }
 }

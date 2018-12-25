@@ -49,47 +49,35 @@ class FileConfigService: ConfigService {
             Optional.empty()
         }
 
-    private fun loadProfileFromFile(globalVariableNames: List<String>, file: File): Optional<Profile> =
-        if (file.exists()) {
-            try {
-                log.info("~ loading profile from '${file.name}'..")
+    internal fun loadProfileFromFile(globalVariableNames: List<String>, file: File): Optional<Profile> =
+        try {
+            log.info("~ loading profile from '${file.name}'..")
 
-                val results = HashMap<String, String>()
-                val config = ConfigFactory.parseFile(file).getConfig("profile")
+            val results = HashMap<String, String>()
+            val config = ConfigFactory.parseFile(file).getConfig("profile")
 
-                globalVariableNames.forEach { variableName ->
-                    if (config.hasPath(variableName)) {
-                        results += variableName to config.getString(variableName)
-                    }
+            globalVariableNames.forEach { variableName ->
+                if (config.hasPath(variableName)) {
+                    results += variableName to config.getString(variableName)
                 }
-
-                val result = Profile(
-                    name = config.getString("name"),
-                    variables = results
-                )
-
-                if (result.name.isNotBlank()) {
-                    log.info("+ profile '${file.name}' has been loaded")
-                    log.debug(result.toString())
-
-                    Optional.of(result)
-
-                } else {
-                    log.warn("profile '${result.name}' is not valid, name must be specified")
-                    Optional.empty()
-                }
-
-            } catch (e: ConfigException.Parse) {
-                log.error("invalid file syntax: ${e.message}", e)
-                Optional.empty<Profile>()
-
-            } catch (e: Exception) {
-                log.error("unable to read profile from file: ${e.message}", e)
-                Optional.empty<Profile>()
             }
 
-        } else {
-            log.error("configuration file '${file.name}' wasn't found")
+            val result = Profile(
+                name = config.getString("name"),
+                variables = results
+            )
+
+            log.info("+ profile '${file.name}' has been loaded")
+            log.debug(result.toString())
+
+            Optional.of(result)
+
+        } catch (e: ConfigException.Parse) {
+            log.error("invalid file syntax: ${e.message}", e)
+            Optional.empty()
+
+        } catch (e: Exception) {
+            log.error("unable to read profile from file: ${e.message}", e)
             Optional.empty()
         }
 
