@@ -1,15 +1,13 @@
 package ru.chikchik.tools.cf
 
-import org.apache.commons.cli.DefaultParser
-import org.apache.commons.cli.HelpFormatter
-import org.apache.commons.cli.Option
-import org.apache.commons.cli.Options
+import org.apache.commons.cli.*
 import org.slf4j.LoggerFactory
 import ru.chikchik.tools.cf.service.ConfigProducer
 import ru.chikchik.tools.cf.service.ConfigService
 import ru.chikchik.tools.cf.service.FileConfigProducer
 import ru.chikchik.tools.cf.service.FileConfigService
 import java.io.File
+import kotlin.system.exitProcess
 
 
 class App {
@@ -31,10 +29,10 @@ class App {
             val helpFormatter = HelpFormatter()
 
             try {
-                log.info("=".repeat(32))
-                log.info("\n\tCONFIG FACTORY $VERSION\n")
-                log.info("  Mass config file generator \n")
-                log.info("-".repeat(32))
+                println("=".repeat(32))
+                println("\n\tCONFIG FACTORY $VERSION\n")
+                println("  Mass config file generator \n")
+                println("-".repeat(32))
 
                 val cmd = DefaultParser().parse(commandOptions, args)
 
@@ -49,10 +47,10 @@ class App {
                     val configProducer: ConfigProducer = FileConfigProducer(cmd.getOptionValue(TEMPLATE_FILE_OPTION))
 
                     val configFiles = configProducer.produce(
-                        profiles = config.get().profiles,
-                        variables = config.get().variables,
-                        outputFileFormat = config.get().outputFileFormat,
-                        outputPath = outputPath
+                            profiles = config.get().profiles,
+                            variables = config.get().variables,
+                            outputFileFormat = config.get().outputFileFormat,
+                            outputPath = outputPath
                     )
 
                     if (configFiles.isPresent) {
@@ -63,9 +61,14 @@ class App {
                     log.error("unable to load application config from file '$CONFIG_FILE'")
                 }
 
-            } catch (e: Exception) {
+            } catch (e: MissingOptionException) {
                 helpFormatter.printHelp("config-factory.jar", commandOptions)
+                exitProcess(-1)
+
+            } catch (e: Exception) {
+                log.error("unexpected error, check logs for details")
                 log.debug(e.message, e)
+                exitProcess(-1)
             }
         }
 
