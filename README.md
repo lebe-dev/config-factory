@@ -176,3 +176,22 @@ gradlew clean build
 gradlew.bat clean build
 ```
 
+## RoadMap
+
+**1.0.0**
+
+- Create templates
+
+**1.0.1 (Current)**
+
+- Refactoring
+- Additional tests
+
+**1.1.0**
+
+- Mass profiles generation
+
+**1.2.0**
+
+- Command-line tool and Graphical interface
+
