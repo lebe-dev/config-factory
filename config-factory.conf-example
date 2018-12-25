@@ -1,8 +1,11 @@
 config {
+  # Global variable names
   variableNames = ["name", "tenantId", "domain"]
 
+  # Global variable, can be overridden with profiles
   domain = "demosite.com"
 
+  # Global variable, can be overridden with profiles
   appPort = 8080
 
   outputFileFormat = "${name}.${domain}.conf"
