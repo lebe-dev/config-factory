@@ -82,7 +82,7 @@ Run tool:
 java -jar config-factory.jar -t nginx.template
 ```
 
-And check `output` directory. The first file `demo-app.conf` will contain:
+And check results inside `output` directory. The first file `demo-app.conf` will contain:
 
 ```
  server {
