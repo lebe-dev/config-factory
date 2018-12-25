@@ -72,6 +72,8 @@ profile {
 }
 ```
 
+Create rest profiles in the same way.
+
 ### 5. Run
 
 Run tool:
