@@ -10,7 +10,7 @@ import java.nio.file.Paths
 internal class AppTest {
 
     @Test
-    @DisplayName("Generate configs")
+    @DisplayName("Generate configs in specified output directory")
     fun main() {
         val workDir = Paths.get(System.getProperty("user.dir"))
 
