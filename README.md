@@ -99,29 +99,6 @@ And check results inside `output` directory. The first file `demo-app.conf` will
  }
 ```
 
-## Profiles
-
-Profile - plain text file with variables. It should be placed inside `profiles/` directory with `*.conf` extension.
-
-Example:
-
-```
-profile {
-    "name" = "cookie",
-    "domain" = "",
-    "portNumber" = 12345,
-    "whatever" = "somevalue"
-}
-```
-
-## Templates
-
-Template - plain text file. Insert variables with following syntax:
-
-```
-${variableName}
-```
-
 ## Configuration
 
 Config factory looks for `config-factory.conf` file in work directory. Use sample file `config-factory.conf-example`.
@@ -159,6 +136,29 @@ You can specify output file names format with `outputFileFormat` property. It su
 3. In loop: get profile, override global variables 
 4. Substitutes variables inside template
 5. Create output file with specified format
+
+### Profiles
+
+Profile - plain text file with variables. It should be placed inside `profiles/` directory with `*.conf` extension.
+
+Example:
+
+```
+profile {
+    "name" = "cookie",
+    "domain" = "",
+    "portNumber" = 12345,
+    "whatever" = "somevalue"
+}
+```
+
+### Templates
+
+Template - plain text file. Insert variables with following syntax:
+
+```
+${variableName}
+```
 
 ## How to build a project
 
