@@ -1,7 +1,6 @@
 package ru.chikchik.tools.cf.service
 
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import ru.chikchik.tools.cf.App
@@ -61,5 +60,13 @@ internal class FileConfigProducerTest {
         results.get().forEach {  if (it.exists()) { it.delete() } }
 
         templateFile.delete()
+    }
+
+    @Test
+    @DisplayName("Template file doesn't exist")
+    fun templateFileDoesNotExist() {
+        assertFalse(
+            FileConfigProducer("does-not-exist-file").produce(listOf(), mapOf(), "", "").isPresent
+        )
     }
 }

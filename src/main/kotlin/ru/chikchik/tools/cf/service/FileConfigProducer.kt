@@ -20,9 +20,9 @@ class FileConfigProducer(private val templateFileName: String): ConfigProducer {
         if (!outputDirectory.exists()) { outputDirectory.mkdir() }
 
         val templateFile = File(templateFileName)
-        val template = templateFile.readText()
 
         return if (templateFile.exists()) {
+            val template = templateFile.readText()
 
             val results = arrayListOf<File>()
 
