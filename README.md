@@ -154,15 +154,11 @@ You can specify output file names format with `outputFileFormat` property. It su
 
 ## How it works
 
-1. Read main configuration and global variables from `config-factory.conf`, then read profiles from `profiles/*.conf`.
+1. Reads main configuration and global variables from `config-factory.conf`, then read profiles from `profiles/*.conf`.
 2. Override variables with same names.
 3. In loop: get profile, override global variables 
 4. Substitutes variables inside template
 5. Create output file with specified format
-
-## Examples
-
-Check `profiles` directory and `nginx.template-example` file.
 
 ## How to build a project
 
