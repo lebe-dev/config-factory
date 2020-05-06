@@ -15,6 +15,15 @@ fun <R> assertRightResult(result: OperationResult<R>, body: (R) -> Unit) {
     }
 }
 
+fun <R> assertError(result: OperationResult<R>, error: OperationError = OperationError.ERROR) {
+    assertTrue(result.isLeft())
+
+    when(result) {
+        is Either.Left -> assertEquals(error, result.a)
+        is Either.Right -> throw Exception("expected left result")
+    }
+}
+
 fun <R> assertLeftResult(result: OperationResult<R>) {
     assertTrue(result.isLeft())
 }

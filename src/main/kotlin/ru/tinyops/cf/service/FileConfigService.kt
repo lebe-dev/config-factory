@@ -29,7 +29,7 @@ class FileConfigService: ConfigService {
                 val globalVariableNames = getStringList(config, "variableNames")
 
                 val result = AppConfig(
-                    variableNames = globalVariableNames.distinct(),
+                    variableNames = globalVariableNames.distinct().filter { it.isNotBlank() },
                     variables = getVariableMap(globalVariableNames, config),
                     profiles = getProfileList(globalVariableNames),
                     outputFileFormat = config.getString("outputFileFormat")
@@ -42,7 +42,7 @@ class FileConfigService: ConfigService {
 
             } catch (e: ConfigException.Parse) {
                 log.error("invalid configuration file syntax: ${e.message}", e)
-                Either.left(OperationError.ERROR)
+                Either.left(OperationError.BAD_CONFIG)
 
             } catch (e: Exception) {
                 log.error("unable to read configuration from file: ${e.message}", e)
@@ -51,10 +51,10 @@ class FileConfigService: ConfigService {
 
         } else {
             log.error("config file '${file.name}' wasn't found")
-            Either.left(OperationError.ERROR)
+            Either.left(OperationError.NOT_FOUND)
         }
 
-    internal fun loadProfileFromFile(globalVariableNames: List<String>, file: File): Optional<Profile> =
+    private fun loadProfileFromFile(globalVariableNames: List<String>, file: File): Optional<Profile> =
         try {
             log.info("~ loading profile from '${file.name}'..")
 
