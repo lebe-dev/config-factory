@@ -1,19 +1,24 @@
 package ru.tinyops.cf.service
 
+import arrow.core.Either
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigException
 import com.typesafe.config.ConfigFactory
 import org.slf4j.LoggerFactory
 import ru.tinyops.cf.domain.AppConfig
+import ru.tinyops.cf.domain.OperationError
+import ru.tinyops.cf.domain.OperationResult
 import ru.tinyops.cf.domain.Profile
 import java.io.File
 import java.nio.file.Paths
-import java.util.*
+import java.util.ArrayList
+import java.util.HashMap
+import java.util.Optional
 
 class FileConfigService: ConfigService {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    override fun load(file: File): Optional<AppConfig> =
+    override fun load(file: File): OperationResult<AppConfig> =
         if (file.exists()) {
             try {
                 log.info("[~] loading config from file '${file.name}'..")
@@ -33,20 +38,20 @@ class FileConfigService: ConfigService {
                 log.info("+ config successfully loaded")
                 log.debug(result.toString())
 
-                Optional.of(result)
+                Either.right(result)
 
             } catch (e: ConfigException.Parse) {
                 log.error("invalid configuration file syntax: ${e.message}", e)
-                Optional.empty<AppConfig>()
+                Either.left(OperationError.ERROR)
 
             } catch (e: Exception) {
                 log.error("unable to read configuration from file: ${e.message}", e)
-                Optional.empty<AppConfig>()
+                Either.left(OperationError.ERROR)
             }
 
         } else {
             log.error("config file '${file.name}' wasn't found")
-            Optional.empty()
+            Either.left(OperationError.ERROR)
         }
 
     internal fun loadProfileFromFile(globalVariableNames: List<String>, file: File): Optional<Profile> =

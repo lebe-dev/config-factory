@@ -1,8 +1,8 @@
 package ru.tinyops.cf.service
 
 import ru.tinyops.cf.domain.AppConfig
+import ru.tinyops.cf.domain.OperationResult
 import java.io.File
-import java.util.*
 
 /**
  * Configuration service
@@ -14,5 +14,5 @@ interface ConfigService {
      * @param file configuration file
      * @return application config entity, empty - otherwise
      */
-    fun load(file: File): Optional<AppConfig>
+    fun load(file: File): OperationResult<AppConfig>
 }

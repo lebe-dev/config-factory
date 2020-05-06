@@ -13,10 +13,13 @@ version = "1.0.2"
 repositories {
     mavenCentral()
     jcenter()
+    maven("https://dl.bintray.com/arrow-kt/arrow-kt/")
 }
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
+
+    implementation("io.arrow-kt:arrow-core-data:0.10.5")
 
     implementation("com.typesafe:config:1.3.3")
     implementation("commons-cli:commons-cli:1.4")

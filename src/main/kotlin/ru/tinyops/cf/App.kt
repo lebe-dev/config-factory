@@ -1,5 +1,6 @@
 package ru.tinyops.cf
 
+import arrow.core.Either
 import org.apache.commons.cli.*
 import org.slf4j.LoggerFactory
 import ru.tinyops.cf.service.ConfigProducer
@@ -37,28 +38,30 @@ class App {
                 val cmd = DefaultParser().parse(commandOptions, args)
 
                 val configService: ConfigService = FileConfigService()
-                val config = configService.load(File(CONFIG_FILE))
+                when(val config = configService.load(File(CONFIG_FILE))) {
+                    is Either.Right -> {
+                        log.debug("+ config has been found")
 
-                if (config.isPresent) {
-                    log.debug("+ config has been found")
+                        val outputPath = cmd.getOptionValue(OUTPUT_PATH_OPTION) ?: OUTPUT_DIRECTORY
 
-                    val outputPath = cmd.getOptionValue(OUTPUT_PATH_OPTION) ?: OUTPUT_DIRECTORY
+                        val configProducer: ConfigProducer = FileConfigProducer(
+                            cmd.getOptionValue(TEMPLATE_FILE_OPTION)
+                        )
 
-                    val configProducer: ConfigProducer = FileConfigProducer(cmd.getOptionValue(TEMPLATE_FILE_OPTION))
-
-                    val configFiles = configProducer.produce(
-                            profiles = config.get().profiles,
-                            variables = config.get().variables,
-                            outputFileFormat = config.get().outputFileFormat,
+                        val configFiles = configProducer.produce(
+                            profiles = config.b.profiles,
+                            variables = config.b.variables,
+                            outputFileFormat = config.b.outputFileFormat,
                             outputPath = outputPath
-                    )
+                        )
 
-                    if (configFiles.isPresent) {
-                        log.info("[+] created config files (${configFiles.get().size}) at path '$outputPath'")
+                        if (configFiles.isPresent) {
+                            log.info("[+] created config files (${configFiles.get().size}) at path '$outputPath'")
+                        }
                     }
-
-                } else {
-                    log.error("unable to load application config from file '$CONFIG_FILE'")
+                    is Either.Left -> {
+                        log.error("unable to load application config from file '$CONFIG_FILE'")
+                    }
                 }
 
             } catch (e: MissingOptionException) {

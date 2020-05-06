@@ -6,7 +6,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import ru.tinyops.cf.App
-import ru.tinyops.cf.service.FileConfigService
+import ru.tinyops.cf.util.assertLeftResult
+import ru.tinyops.cf.util.assertRightResult
 import java.io.File
 
 @DisplayName("Configuration Manager")
@@ -23,30 +24,30 @@ internal class FileConfigServiceTest {
     fun load() {
         val configFile = File(javaClass.getResource("/${App.CONFIG_FILE}").toURI())
 
-        val config = configService.load(configFile).get()
+        assertRightResult(configService.load(configFile)) { config ->
+            assertEquals(2, config.profiles.size)
 
-        assertEquals(2, config.profiles.size)
+            val bristolProfile = config.profiles.first()
 
-        val bristolProfile = config.profiles.first()
+            assertEquals("bristol", bristolProfile.name)
+            assertEquals("com.uk", bristolProfile.variables["domain"])
+            assertEquals("BRISTOL07", bristolProfile.variables["tenantId"])
 
-        assertEquals("bristol", bristolProfile.name)
-        assertEquals("com.uk", bristolProfile.variables["domain"])
-        assertEquals("BRISTOL07", bristolProfile.variables["tenantId"])
+            val krakowProfile = config.profiles.last()
 
-        val krakowProfile = config.profiles.last()
+            assertEquals("krakow", krakowProfile.name)
+            assertEquals("cities.pl", krakowProfile.variables["domain"])
+            assertEquals("KRAKOW-ID", krakowProfile.variables["tenantId"])
 
-        assertEquals("krakow", krakowProfile.name)
-        assertEquals("cities.pl", krakowProfile.variables["domain"])
-        assertEquals("KRAKOW-ID", krakowProfile.variables["tenantId"])
-
-        assertEquals("demosite.com", config.variables["domain"])
-        assertEquals("\${name}.\${domain}.conf", config.outputFileFormat)
+            assertEquals("demosite.com", config.variables["domain"])
+            assertEquals("\${name}.\${domain}.conf", config.outputFileFormat)
+        }
     }
 
     @Test
     @DisplayName("Load config from nonexistence file")
     fun loadFromUnknownFile() {
-        assertFalse(configService.load(File("gq3948ghq9gihdfg")).isPresent)
+        assertLeftResult(configService.load(File("gq3948ghq9gihdfg")))
     }
 
     @Test
@@ -55,7 +56,7 @@ internal class FileConfigServiceTest {
         val configFile = File("invalid-config")
         configFile.writeText("owrijg0q394jg834jg")
 
-        assertFalse(configService.load(configFile).isPresent)
+        assertLeftResult(configService.load(configFile))
 
         configFile.delete()
     }
@@ -70,7 +71,7 @@ internal class FileConfigServiceTest {
                 "  tenantId = \"BRISTOL07\"\n" +
                 "}")
 
-        assertFalse(configService.load(configFile).isPresent)
+        assertLeftResult(configService.load(configFile))
 
         configFile.delete()
     }
@@ -83,7 +84,7 @@ internal class FileConfigServiceTest {
                 "  tenantId = \"BRISTOL07\"\n" +
                 "}")
 
-        assertFalse(configService.load(configFile).isPresent)
+        assertLeftResult(configService.load(configFile))
 
         configFile.delete()
     }
