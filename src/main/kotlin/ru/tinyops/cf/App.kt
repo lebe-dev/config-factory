@@ -16,7 +16,7 @@ class App {
     companion object {
         private val log = LoggerFactory.getLogger(App::class.java)
 
-        private const val VERSION = "1.0.1"
+        private const val VERSION = "1.0.2"
 
         const val OUTPUT_DIRECTORY = "output"
 
