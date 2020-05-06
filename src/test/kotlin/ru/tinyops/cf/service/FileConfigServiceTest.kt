@@ -2,13 +2,18 @@ package ru.tinyops.cf.service
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import ru.tinyops.cf.App
+import ru.tinyops.cf.domain.OperationError
+import ru.tinyops.cf.util.assertError
 import ru.tinyops.cf.util.assertLeftResult
 import ru.tinyops.cf.util.assertRightResult
+import ru.tinyops.cf.util.getRandomText
 import java.io.File
+import java.nio.file.Files
 
 @DisplayName("Configuration Manager")
 internal class FileConfigServiceTest {
@@ -20,8 +25,21 @@ internal class FileConfigServiceTest {
     }
 
     @Test
-    @DisplayName("Load config from file")
-    fun load() {
+    fun `Return bad-config error if config file syntax is invalid`() {
+        val configFile = Files.createTempFile("", "").toFile().apply { writeText(getRandomText()) }
+
+        assertError(configService.load(configFile), OperationError.BAD_CONFIG)
+
+        configFile.delete()
+    }
+
+    @Test
+    fun `Return not-found error if config file was not found`() {
+        assertError(configService.load(File(getRandomText())), OperationError.NOT_FOUND)
+    }
+
+    @Test
+    fun `Valid config should contain all profiles`() {
         val configFile = File(javaClass.getResource("/${App.CONFIG_FILE}").toURI())
 
         assertRightResult(configService.load(configFile)) { config ->
@@ -42,23 +60,6 @@ internal class FileConfigServiceTest {
             assertEquals("demosite.com", config.variables["domain"])
             assertEquals("\${name}.\${domain}.conf", config.outputFileFormat)
         }
-    }
-
-    @Test
-    @DisplayName("Load config from nonexistence file")
-    fun loadFromUnknownFile() {
-        assertLeftResult(configService.load(File("gq3948ghq9gihdfg")))
-    }
-
-    @Test
-    @DisplayName("Load config from invalid file")
-    fun loadFromInvalidFile() {
-        val configFile = File("invalid-config")
-        configFile.writeText("owrijg0q394jg834jg")
-
-        assertLeftResult(configService.load(configFile))
-
-        configFile.delete()
     }
 
     @Test
@@ -87,16 +88,5 @@ internal class FileConfigServiceTest {
         assertLeftResult(configService.load(configFile))
 
         configFile.delete()
-    }
-
-    @Test
-    @DisplayName("Load profile from file with invalid syntax")
-    fun loadProfileWithInvalidSyntax() {
-        val profileFile = File("blank-config")
-        profileFile.writeText("invalid-profile-syntax")
-
-        assertFalse(configService.loadProfileFromFile(listOf(), profileFile).isPresent)
-
-        profileFile.delete()
     }
 }
