@@ -5,5 +5,5 @@ import arrow.core.Either
 typealias OperationResult<R> = Either<OperationError, R>
 
 enum class OperationError {
-    ERROR, NOT_FOUND
+    ERROR, CONFIG_ERROR, NOT_FOUND
 }

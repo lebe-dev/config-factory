@@ -1,12 +1,14 @@
 package ru.tinyops.cf.service
 
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import ru.tinyops.cf.App
 import ru.tinyops.cf.domain.Profile
+import ru.tinyops.cf.util.assertLeftResult
+import ru.tinyops.cf.util.assertRightResult
+import ru.tinyops.cf.util.getRandomText
 import java.io.File
 
 @DisplayName("Config Producer Test")
@@ -22,7 +24,8 @@ internal class FileConfigProducerTest {
         val templateFile = templateResource.copyTo(File(fileName), true)
 
         val producer = FileConfigProducer(templateFile.name)
-        val results = producer.produce(
+
+        assertRightResult(producer.produce(
             profiles = listOf(
                 Profile(
                     name = "alpha",
@@ -42,37 +45,37 @@ internal class FileConfigProducerTest {
             variables = mapOf("domain" to "alka.com"),
             outputFileFormat = "\${name}.\${domain}.conf",
             outputPath = App.OUTPUT_DIRECTORY
-        )
+        )) { results ->
+            assertEquals(2, results.size)
 
-        assertEquals(2, results.get().size)
+            val alphaResult = results.first()
+            val alphaResultText = alphaResult.readText()
 
-        val alphaResult = results.get().first()
-        val alphaResultText = alphaResult.readText()
+            assertTrue(alphaResultText.contains("server_name  alpha.synchrophasotron.com;"))
+            assertEquals("alpha.synchrophasotron.com.conf", alphaResult.name)
 
-        assertTrue(alphaResultText.contains("server_name  alpha.synchrophasotron.com;"))
-        assertEquals("alpha.synchrophasotron.com.conf", alphaResult.name)
+            val betaResult = results.last()
+            val betaResultText = betaResult.readText()
 
-        val betaResult = results.get().last()
-        val betaResultText = betaResult.readText()
-
-        assertTrue(betaResultText.contains("server_name  beta.rocket.com;"))
-        assertEquals("beta.rocket.com.conf", betaResult.name)
+            assertTrue(betaResultText.contains("server_name  beta.rocket.com;"))
+            assertEquals("beta.rocket.com.conf", betaResult.name)
 
 
-        results.get().forEach {
-            if (it.exists()) {
-                it.delete()
+            results.forEach {
+                if (it.exists()) {
+                    it.delete()
+                }
             }
-        }
 
-        templateFile.delete()
+            templateFile.delete()
+        }
     }
 
     @Test
     @DisplayName("Template file doesn't exist")
     fun templateFileDoesNotExist() {
-        assertFalse(
-            FileConfigProducer("does-not-exist-file").produce(listOf(), mapOf(), "", "").isPresent
+        assertLeftResult(
+            FileConfigProducer(getRandomText()).produce(listOf(), mapOf(), "", "")
         )
     }
 }

@@ -48,16 +48,17 @@ class App {
                             cmd.getOptionValue(TEMPLATE_FILE_OPTION)
                         )
 
-                        val configFiles = configProducer.produce(
+                        when(val configFiles = configProducer.produce(
                             profiles = config.b.profiles,
                             variables = config.b.variables,
                             outputFileFormat = config.b.outputFileFormat,
                             outputPath = outputPath
-                        )
-
-                        if (configFiles.isPresent) {
-                            log.info("[+] created config files (${configFiles.get().size}) at path '$outputPath'")
+                        )) {
+                            is Either.Right ->
+                                log.info("[+] created config files (${configFiles.b.size}) at path '$outputPath'")
+                            is Either.Left -> log.error("unable to generate config files")
                         }
+
                     }
                     is Either.Left -> {
                         log.error("unable to load application config from file '$CONFIG_FILE'")

@@ -1,17 +1,19 @@
 package ru.tinyops.cf.service
 
+import arrow.core.Either
 import org.apache.commons.lang.text.StrSubstitutor
 import org.slf4j.LoggerFactory
+import ru.tinyops.cf.domain.OperationError
+import ru.tinyops.cf.domain.OperationResult
 import ru.tinyops.cf.domain.Profile
 import java.io.File
 import java.nio.file.Paths
-import java.util.*
 
 class FileConfigProducer(private val templateFileName: String): ConfigProducer {
     private val log = LoggerFactory.getLogger(javaClass)
 
     override fun produce(profiles: List<Profile>, variables: Map<String, String>,
-                         outputFileFormat: String, outputPath: String): Optional<List<File>> {
+                         outputFileFormat: String, outputPath: String): OperationResult<List<File>> {
 
         log.info("[~] product config files based on profiles (${profiles.size})..")
 
@@ -30,7 +32,7 @@ class FileConfigProducer(private val templateFileName: String): ConfigProducer {
 
                 val profileVariables = hashMapOf<String, String>()
                 profileVariables.putAll(variables)
-                profile.variables.forEach { key, value -> profileVariables[key] = value }
+                profile.variables.forEach { (key, value) -> profileVariables[key] = value }
 
                 val outputFileName = StrSubstitutor(profileVariables).replace(outputFileFormat)
 
@@ -43,11 +45,11 @@ class FileConfigProducer(private val templateFileName: String): ConfigProducer {
                 results += outputFile
             }
 
-            Optional.of(results)
+            Either.right(results)
 
         } else {
             log.error("template file wasn't found '$templateFile'")
-            Optional.empty()
+            Either.left(OperationError.NOT_FOUND)
         }
     }
 }
