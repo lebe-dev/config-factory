@@ -1,6 +1,6 @@
-package ru.chikchik.tools.cf.service
+package ru.tinyops.cf.service
 
-import ru.chikchik.tools.cf.domain.Profile
+import ru.tinyops.cf.domain.Profile
 import java.io.File
 import java.util.*
 

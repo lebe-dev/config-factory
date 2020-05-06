@@ -1,9 +1,10 @@
-package ru.chikchik.tools.cf
+package ru.tinyops.cf
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import ru.tinyops.cf.App
 import java.io.File
 import java.nio.file.Paths
 

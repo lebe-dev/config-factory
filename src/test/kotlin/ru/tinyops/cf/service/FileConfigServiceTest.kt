@@ -1,11 +1,12 @@
-package ru.chikchik.tools.cf.service
+package ru.tinyops.cf.service
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import ru.chikchik.tools.cf.App
+import ru.tinyops.cf.App
+import ru.tinyops.cf.service.FileConfigService
 import java.io.File
 
 @DisplayName("Configuration Manager")

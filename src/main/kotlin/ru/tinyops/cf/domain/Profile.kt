@@ -1,4 +1,4 @@
-package ru.chikchik.tools.cf.domain
+package ru.tinyops.cf.domain
 
 data class Profile(
     val name: String,

@@ -1,11 +1,11 @@
-package ru.chikchik.tools.cf
+package ru.tinyops.cf
 
 import org.apache.commons.cli.*
 import org.slf4j.LoggerFactory
-import ru.chikchik.tools.cf.service.ConfigProducer
-import ru.chikchik.tools.cf.service.ConfigService
-import ru.chikchik.tools.cf.service.FileConfigProducer
-import ru.chikchik.tools.cf.service.FileConfigService
+import ru.tinyops.cf.service.ConfigProducer
+import ru.tinyops.cf.service.ConfigService
+import ru.tinyops.cf.service.FileConfigProducer
+import ru.tinyops.cf.service.FileConfigService
 import java.io.File
 import kotlin.system.exitProcess
 

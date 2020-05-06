@@ -1,11 +1,11 @@
-package ru.chikchik.tools.cf.service
+package ru.tinyops.cf.service
 
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigException
 import com.typesafe.config.ConfigFactory
 import org.slf4j.LoggerFactory
-import ru.chikchik.tools.cf.domain.AppConfig
-import ru.chikchik.tools.cf.domain.Profile
+import ru.tinyops.cf.domain.AppConfig
+import ru.tinyops.cf.domain.Profile
 import java.io.File
 import java.nio.file.Paths
 import java.util.*
